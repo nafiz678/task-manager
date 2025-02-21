@@ -17,7 +17,7 @@ export function ModeToggle() {
         <Button
             variant="outline"
             size="icon"
-            className="absolute right-4 top-4"
+            className=""
             onClick={toggleDarkMode}
         >
             {theme === "dark" ? (

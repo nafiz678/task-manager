@@ -54,6 +54,7 @@ export default function Register() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
+            if (!imageUrl) return toast.error("Wait for the image to load")
             await register(values.email, values.password)
                 .then(async (res: UserCredential) => {
                     console.log(res.user)

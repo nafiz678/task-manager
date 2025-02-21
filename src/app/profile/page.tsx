@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { LayoutDashboard, UserCog, Settings, LogOut, PanelLeft } from "lucide-react";
+import { LayoutDashboard, UserCog, LogOut, PanelLeft, CalendarPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -11,9 +11,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
+import AddTask from "@/components/Add-task";
 
 const sidebar = () => {
-
+ 
+  const [dialogOpen, setDialogOpen] = useState(false); 
   const [open, setOpen] = useState<boolean>(false);
   const { user, loading, logout } = useAuth();
   const router = useRouter();
@@ -39,13 +41,6 @@ const sidebar = () => {
         <UserCog className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    {
-      label: "Settings",
-      href: "#",
-      icon: (
-        <Settings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
   ];
 
   const animate = true
@@ -69,6 +64,23 @@ const sidebar = () => {
               {links.map((link, idx) => (
                 <SidebarLink key={idx} link={link} />
               ))}
+
+              <div className="flex items-center justify-start gap-2 group/sidebar py-2">
+                <Button className="p-0 m-0" variant={"ghost"} onClick={() => setDialogOpen(true)}>
+                  <CalendarPlus className="text-neutral-700 !size-5 dark:text-neutral-200 " />
+                  <motion.span
+                    animate={{
+                      display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                      opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover:translate-x-[5px]"
+                  >
+                    Add task
+                  </motion.span>
+                </Button>
+              </div>
+              {/* AddTask Dialog */}
+              <AddTask open={dialogOpen} setOpen={setDialogOpen} />
 
               <div className="flex items-center justify-start gap-2 group/sidebar py-2">
                 <Button onClick={logout} className="p-0 m-0" variant={"ghost"}>

@@ -4,6 +4,7 @@ import { User } from "firebase/auth";
 import { toast } from "sonner";
 
 
+
 // Upload image and return image url 
 export const imageUpload = async (imageData: string | Blob) => {
 
@@ -16,13 +17,13 @@ export const imageUpload = async (imageData: string | Blob) => {
     return data.secure_url
 }
 
-// /${user?.email}
+// 
 export const saveUser = async (user : User) => {
     try {
-        await axios.post(`${process.env.NEXT_SERVER_URL}/users`, {
+        await axios.post(`http://localhost:3001/users`, {
             name: user?.displayName,
             email: user?.email,
-            image: user.photoURL,
+            image: user?.photoURL,
         })
     } catch (error) {
         toast.error("Error occurred")
