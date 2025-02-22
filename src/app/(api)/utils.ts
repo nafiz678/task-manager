@@ -20,7 +20,7 @@ export const imageUpload = async (imageData: string | Blob) => {
 // 
 export const saveUser = async (user : User) => {
     try {
-        await axios.post(`http://localhost:3001/users`, {
+        await axios.post(`http://localhost:3001/users/${user.email}`, {
             name: user?.displayName,
             email: user?.email,
             image: user?.photoURL,

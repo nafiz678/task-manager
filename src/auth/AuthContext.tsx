@@ -2,21 +2,23 @@
 
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile, User, UserCredential } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile, User, UserCredential } from 'firebase/auth';
 import { auth } from './firebase';
+import { GoogleAuthProvider } from "firebase/auth";
 
 
 
 
 interface AuthInfo {
     loading: boolean;
-    user: User | null ;
+    user: User | null;
     setUser: (user: User | null) => void;
     setLoading: (loading: boolean) => void
     login: (email: string, password: string) => Promise<UserCredential>;
     register: (email: string, password: string) => Promise<UserCredential>;
-    updateUser: (displayName: string, photoURL: string) => Promise<void>
-    logout: ()=> Promise<void>
+    updateUser: (displayName: string, photoURL: string) => Promise<void>;
+    logout: () => Promise<void>;
+    googleSignIn: () => Promise<UserCredential>
 }
 
 type Props = {
@@ -29,13 +31,20 @@ export const AuthProvider = ({ children }: Props) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const provider = new GoogleAuthProvider();
+
+
+    // google login function
+    const googleSignIn = async () => {
+        return await signInWithPopup(auth, provider);
+    }
 
     // Register function
     const register = async (email: string, password: string): Promise<UserCredential> => {
         return await createUserWithEmailAndPassword(auth, email, password);
     };
 
-
+    // update user function
     const updateUser = async (displayName: string, photoURL: string): Promise<void> => {
         if (!auth.currentUser) throw new Error("No authenticated user found");
         return await updateProfile(auth.currentUser, { displayName, photoURL });
@@ -48,13 +57,13 @@ export const AuthProvider = ({ children }: Props) => {
 
     const logout = async () => {
         try {
-          await signOut(auth);
-          setUser(null);
+            await signOut(auth);
+            setUser(null);
         } catch (error) {
-          console.error("Logout failed", error);
+            console.error("Logout failed", error);
         }
-      };
-      
+    };
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -64,7 +73,7 @@ export const AuthProvider = ({ children }: Props) => {
             console.log(loading)
         });
 
-        return () => unsubscribe(); 
+        return () => unsubscribe();
     }, []);
 
     const authInfo: AuthInfo = {
@@ -76,6 +85,7 @@ export const AuthProvider = ({ children }: Props) => {
         register,
         updateUser,
         logout,
+        googleSignIn,
     }
 
     return (

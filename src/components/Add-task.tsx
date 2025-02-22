@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/textarea"
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/auth/AuthContext';
 
 const formSchema = z.object({
     title: z.string().min(1).min(1).max(50),
@@ -39,6 +40,7 @@ const formSchema = z.object({
 const AddTask = ({ open, setOpen, refetch }:
      { open: boolean; setOpen: (value: boolean) => void; refetch: ()=> void }) => {
 
+        const {user} = useAuth()
     const router = useRouter()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -56,6 +58,7 @@ const AddTask = ({ open, setOpen, refetch }:
                 description: values.description,
                 timestamp: Date.now(),
                 category: "to-do",
+                userEmail: user?.email,
             })
             if(data.data.message){
                 toast.success(data.data.message)

@@ -41,7 +41,7 @@ const formSchema = z.object({
 export default function Register() {
     const [image, setImage] = useState<HTMLInputElement | null | string>(null);
     const [imageUrl, setImageUrl] = useState<string>("")
-    const { register, updateUser, setUser } = useAuth()
+    const { register, updateUser, setUser, googleSignIn, setLoading } = useAuth()
     const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -85,6 +85,21 @@ export default function Register() {
             console.log(image)
         }
     };
+
+    const handleGoogle = async () => {
+        try {
+            //User Registration using google
+            const data = await googleSignIn()
+            // save user info in db if the user is new
+            await saveUser(data?.user)
+            router.push("/dashboard");
+            toast.success("Signup Successful")
+        } catch (err) {
+            toast.error(err?.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
 
     return (
@@ -189,7 +204,7 @@ export default function Register() {
                         </div>
 
                         <div className="flex justify-center mt-4">
-                            <Button variant="outline" className="flex items-center w-full gap-2">
+                            <Button onClick={handleGoogle} variant="outline" className="flex items-center w-full gap-2">
                                 <LogIn size={20} /> Sign in with Google
                             </Button>
                         </div>

@@ -26,6 +26,7 @@ import { useAuth } from "@/auth/AuthContext";
 import { UserCredential } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { saveUser } from "@/app/(api)/utils";
 
 const formSchema = z.object({
     email: z.string().email("Invalid email format"),
@@ -34,7 +35,7 @@ const formSchema = z.object({
 
 
 export default function Login() {
-    const { login, user } = useAuth()
+    const { login, user, googleSignIn, setLoading } = useAuth()
     const router = useRouter()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -55,13 +56,27 @@ export default function Login() {
                     toast.success("login Successful")
                 })
                 .catch((err: void) => {
-                    console.log(err)
                     toast.error(err.message)
                 })
 
         } catch (error) {
             console.error("Form submission error", error);
             toast.error("Failed to submit the form. Please try again.");
+        }
+    }
+
+    const handleGoogle = async () => {
+        try {
+            //User Registration using google
+            const data = await googleSignIn()
+            // save user info in db if the user is new
+            await saveUser(data?.user)
+            router.push("/dashboard");
+            toast.success("Login Successful")
+        } catch (err) {
+            toast.error(err?.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -115,7 +130,7 @@ export default function Login() {
                                     )}
                                 />
 
-                                <Button className="w-full" type="submit">Submit</Button>
+                                <Button className="w-full" type="submit">Login</Button>
                             </form>
                         </Form>
                         <div className="flex items-center gap-4">
@@ -129,7 +144,10 @@ export default function Login() {
                             <div className="flex-1 border-t border-neutral-300 dark:border-neutral-600"></div>
                         </div>
                         <div className="flex justify-center mt-4">
-                            <Button variant="outline" className="flex items-center w-full gap-2">
+                            <Button onClick={handleGoogle}
+                                variant="outline"
+                                className="flex items-center w-full gap-2"
+                            >
                                 <LogIn size={20} /> Sign in with Google
                             </Button>
                         </div>

@@ -64,7 +64,7 @@ const DraggableTask = ({ task, refetch }: Props) => {
                                 }} size="icon">
                                 <Pencil />
                             </Button>
-                            <UpdateDialog task={task} open={open} setOpen={setOpen} />
+                            <UpdateDialog refetch={refetch} task={task} open={open} setOpen={setOpen} />
                             {/* delete button */}
                             <Button
                                 onPointerDown={(e) => e.stopPropagation()}

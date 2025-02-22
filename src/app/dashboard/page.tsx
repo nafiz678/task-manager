@@ -32,14 +32,17 @@ const sidebar = () => {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
 
-  // Fetch tasks
+  // Fetch all tasks
   const { data: tasks = [], isLoading, refetch } = useQuery<TaskProps[]>({
-    queryKey: ["tasks"],
+    queryKey: ["tasks", user?.email], // Depend on email
     queryFn: async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`);
+      if (!user?.email) return []; // Prevent unnecessary API calls
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${user.email}`);
       return data;
     },
+    enabled: !!user?.email, // Only run if email is available
   });
+
 
   if (loading) return <Loader />;
   if (!user) {
@@ -47,7 +50,7 @@ const sidebar = () => {
     return null;
   }
 
-   
+
 
   const links = [
     {
@@ -66,7 +69,7 @@ const sidebar = () => {
     },
   ];
 
- 
+
 
   const animate = true
 
