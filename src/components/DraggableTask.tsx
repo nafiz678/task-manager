@@ -78,7 +78,7 @@ const DraggableTask = ({ task, refetch }: Props) => {
                                             <div className="flex justify-end gap-2 mt-2">
                                                 <Button
                                                     variant="ghost"
-                                                    onClick={() => toast.dismiss(t.id)}
+                                                    onClick={() => toast.dismiss(t)}
                                                 >
                                                     Cancel
                                                 </Button>
@@ -86,7 +86,7 @@ const DraggableTask = ({ task, refetch }: Props) => {
                                                     variant="destructive"
                                                     onClick={() => {
                                                         handleDelete(task._id); 
-                                                        toast.dismiss(t.id); 
+                                                        toast.dismiss(t); 
                                                     }}
                                                 >
                                                     Delete

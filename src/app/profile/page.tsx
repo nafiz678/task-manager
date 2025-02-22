@@ -13,17 +13,10 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import AddTask from "@/components/Add-task";
 import { ModeToggle } from "@/components/ui/ThemeToggle";
-import Dashboard from "@/components/Dashboard";
-import axios from "axios";
+import MobileMenu from "@/components/MobileMenu";
 import { useQuery } from "@tanstack/react-query";
-
-export interface TaskProps {
-  _id: string;
-  title: string;
-  description: string;
-  category: "to-do" | "in-progress" | "done";
-  timestamp?: string;
-}
+import { TaskProps } from "../dashboard/page";
+import axios from "axios";
 
 const sidebar = () => {
 
@@ -32,22 +25,24 @@ const sidebar = () => {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
 
-  // Fetch tasks
-  const { data: tasks = [], isLoading, refetch } = useQuery<TaskProps[]>({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`);
-      return data;
-    },
-  });
+    // Fetch all tasks
+    const { data: tasks = [], refetch } = useQuery<TaskProps[]>({
+      queryKey: ["tasks", user?.email],
+      queryFn: async () => {
+        if (!user?.email) return [];
+        const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${user.email}`);
+        return data;
+      },
+      enabled: !!user?.email,
+    });
+
+  console.log(tasks)
 
   if (loading) return <Loader />;
   if (!user) {
     router.push("/auth/login");
     return null;
   }
-
-   
 
   const links = [
     {
@@ -65,8 +60,6 @@ const sidebar = () => {
       ),
     },
   ];
-
- 
 
   const animate = true
 
@@ -143,12 +136,33 @@ const sidebar = () => {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard refetch={refetch} tasks={tasks} isLoading={isLoading} />
+      <Dashboard />
     </div>
   );
 }
 
 
+// Dummy dashboard component with content
+const Dashboard = () => {
 
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) {
+    router.push("/auth/login");
+    return null;
+  }
+
+  return (
+    <>
+      {/* mobile menu */}
+      <MobileMenu />
+      <div className="grid flex-1 grid-cols-12 justify-evenly items-center pl-6">
+        coming soon...
+      </div>
+    </>
+  );
+};
 
 export default sidebar

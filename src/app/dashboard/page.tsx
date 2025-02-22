@@ -16,6 +16,7 @@ import { ModeToggle } from "@/components/ui/ThemeToggle";
 import Dashboard from "@/components/Dashboard";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import MobileMenu from "@/components/MobileMenu";
 
 export interface TaskProps {
   _id: string;
@@ -34,13 +35,13 @@ const sidebar = () => {
 
   // Fetch all tasks
   const { data: tasks = [], isLoading, refetch } = useQuery<TaskProps[]>({
-    queryKey: ["tasks", user?.email], // Depend on email
+    queryKey: ["tasks", user?.email],
     queryFn: async () => {
-      if (!user?.email) return []; // Prevent unnecessary API calls
+      if (!user?.email) return [];
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${user.email}`);
       return data;
     },
-    enabled: !!user?.email, // Only run if email is available
+    enabled: !!user?.email,
   });
 
 
@@ -145,6 +146,9 @@ const sidebar = () => {
             {open ? <ModeToggle /> : null}
           </div>
         </SidebarBody>
+
+        {/* mobile menu */}
+        <MobileMenu />
       </Sidebar>
       <Dashboard refetch={refetch} tasks={tasks} isLoading={isLoading} />
     </div>
