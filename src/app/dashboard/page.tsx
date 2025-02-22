@@ -14,6 +14,16 @@ import Loader from "@/components/loader";
 import AddTask from "@/components/Add-task";
 import { ModeToggle } from "@/components/ui/ThemeToggle";
 import Dashboard from "@/components/Dashboard";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+export interface TaskProps {
+  _id: string;
+  title: string;
+  description: string;
+  category: "to-do" | "in-progress" | "done";
+  timestamp?: string;
+}
 
 const sidebar = () => {
 
@@ -22,11 +32,22 @@ const sidebar = () => {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
 
+  // Fetch tasks
+  const { data: tasks = [], isLoading, refetch } = useQuery<TaskProps[]>({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`);
+      return data;
+    },
+  });
+
   if (loading) return <Loader />;
   if (!user) {
     router.push("/auth/login");
     return null;
   }
+
+   
 
   const links = [
     {
@@ -44,6 +65,8 @@ const sidebar = () => {
       ),
     },
   ];
+
+ 
 
   const animate = true
 
@@ -82,7 +105,7 @@ const sidebar = () => {
                 </Button>
               </div>
               {/* AddTask Dialog */}
-              <AddTask open={dialogOpen} setOpen={setDialogOpen} />
+              <AddTask refetch={refetch} open={dialogOpen} setOpen={setDialogOpen} />
 
               <div className="flex items-center justify-start gap-2 group/sidebar py-2">
                 <Button onClick={logout} className="p-0 m-0" variant={"ghost"}>
@@ -120,7 +143,7 @@ const sidebar = () => {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      <Dashboard refetch={refetch} tasks={tasks} isLoading={isLoading} />
     </div>
   );
 }

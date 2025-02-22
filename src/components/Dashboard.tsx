@@ -2,7 +2,7 @@
 "use client";
 
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import DroppableContainer from "./DroppableContainer";
 import Loader from "./loader";
+import { toast } from "sonner";
 
 
 export interface TaskProps {
@@ -20,9 +21,15 @@ export interface TaskProps {
   timestamp?: string;
 }
 
+interface Props {
+  tasks: TaskProps[];
+  isLoading: boolean;
+  refetch: ()=> void;
+}
+
 // Dummy dashboard component with content
 
-const Dashboard = () => {
+const Dashboard = ({tasks, isLoading, refetch}: Props) => {
   const { user, loading } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -33,14 +40,7 @@ const Dashboard = () => {
     return null;
   }
 
-  // Fetch tasks
-  const { data: tasks = [], isLoading } = useQuery<TaskProps[]>({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`);
-      return data;
-    },
-  });
+  
 
 
   // Local state for tasks
@@ -69,7 +69,8 @@ const Dashboard = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["tasks"]);
+      toast.success("Done")
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
     onError: (error) => {
       console.error("Error updating task category:", error);
@@ -108,9 +109,9 @@ const Dashboard = () => {
   return (
     <DndContext collisionDetection={closestCorners} onDragEnd={onDragEnd}>
       <div className="grid flex-1 pt-5 grid-cols-12 overflow-y-auto pl-6 gap-4">
-        <DroppableContainer title="To-Do" category="to-do" tasks={taskState["to-do"]} />
-        <DroppableContainer title="In Progress" category="in-progress" tasks={taskState["in-progress"]} />
-        <DroppableContainer title="Done" category="done" tasks={taskState["done"]} />
+        <DroppableContainer refetch={refetch} title="To-Do" category="to-do" tasks={taskState["to-do"]} />
+        <DroppableContainer refetch={refetch} title="In Progress" category="in-progress" tasks={taskState["in-progress"]} />
+        <DroppableContainer refetch={refetch} title="Done" category="done" tasks={taskState["done"]} />
       </div>
     </DndContext>
   );

@@ -6,10 +6,11 @@ import { TaskProps } from "./Dashboard";
 interface Props {
     title: string;
     category: string;
-    tasks: TaskProps[]
+    tasks: TaskProps[];
+    refetch: ()=> void;
   }
 
-const DroppableContainer = ({ title, category, tasks }: Props) => {
+const DroppableContainer = ({ title, category, tasks, refetch }: Props) => {
   const { setNodeRef, isOver } = useDroppable({ id: category });
 
   return (
@@ -21,7 +22,7 @@ const DroppableContainer = ({ title, category, tasks }: Props) => {
     >
       <h1 className="text-xl flex items-center justify-center mb-3">{title}</h1>
       {tasks.map((task) => (
-        <DraggableTask key={task._id} task={task} />
+        <DraggableTask refetch={refetch} key={task._id} task={task} />
       ))}
     </div>
   );

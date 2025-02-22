@@ -1,19 +1,5 @@
-"use client"
-
 import React from 'react'
-import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { toast } from "sonner"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import {
     Form,
     FormControl,
@@ -28,42 +14,43 @@ import {
 import {
     Textarea
 } from "@/components/ui/textarea"
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
+import { Button } from './ui/button'
 
 const formSchema = z.object({
     title: z.string().min(1).min(1).max(50),
     description: z.string().min(1)
 });
+type Props = {
+    open: boolean;
+    setOpen: (value: boolean) => void;
+    task: {
+        _id: string;
+        title: string;
+        description: string;
+        category: "to-do" | "in-progress" | "done";
+        timestamp?: string;
+    }
+}
 
-const AddTask = ({ open, setOpen, refetch }:
-     { open: boolean; setOpen: (value: boolean) => void; refetch: ()=> void }) => {
-
-    const router = useRouter()
+const UpdateDialog = ({ open, setOpen, task }: Props) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues:{
-            description: "",
-            title: ""
+        defaultValues: {
+            description: task.description,
+            title: task.title
         }
     })
 
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`,{
-                title: values.title,
-                description: values.description,
-                timestamp: Date.now(),
-                category: "to-do",
-            })
-            if(data.data.message){
-                toast.success(data.data.message)
-                router.push("/dashboard")
-                form.reset()
-                setOpen(false)
-                refetch()
-            }
+            console.log(values)
+            setOpen(false)
         } catch (error) {
             console.error("Form submission error", error);
             toast.error("Failed to submit the form. Please try again.");
@@ -71,9 +58,11 @@ const AddTask = ({ open, setOpen, refetch }:
     }
 
 
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-[425px]">
+        <Dialog open={open} onOpenChange={setOpen} >
+
+            <DialogContent onPointerDown={(e) => e.stopPropagation()}  className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Add a task</DialogTitle>
                     <DialogDescription>
@@ -120,7 +109,7 @@ const AddTask = ({ open, setOpen, refetch }:
                             )}
                         />
                         <DialogFooter>
-                            <Button type="submit">Add Task</Button>
+                            <Button type="submit">Update Task</Button>
                         </DialogFooter>
                     </form>
                 </Form>
@@ -129,4 +118,4 @@ const AddTask = ({ open, setOpen, refetch }:
     )
 }
 
-export default AddTask
+export default UpdateDialog
