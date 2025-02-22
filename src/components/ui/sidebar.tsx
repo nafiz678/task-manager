@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 
 interface Links {
-  label: string;
+  label: string | null;
   href: string;
   icon: React.JSX.Element | React.ReactNode;
 }
@@ -161,7 +161,7 @@ export const SidebarLink = ({
   ...props
 }: {
   link: Links;
-  className?: string;
+  className?: string ;
   props?: LinkProps;
   func?: () => void;
 }) => {

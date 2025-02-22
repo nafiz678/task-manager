@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { LayoutDashboard, UserCog, LogOut, PanelLeft, CalendarPlus, Delete, FileX2, Pencil } from "lucide-react";
+import { LayoutDashboard, UserCog, LogOut, PanelLeft, CalendarPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -12,19 +12,14 @@ import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import AddTask from "@/components/Add-task";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import moment from 'moment';
-import { Badge } from "@/components/ui/badge";
 import { ModeToggle } from "@/components/ui/ThemeToggle";
+import Dashboard from "@/components/Dashboard";
 
 const sidebar = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const { user, loading, logout } = useAuth();
-  const [tasks, setTasks] = useState([])
   const router = useRouter();
 
   if (loading) return <Loader />;
@@ -112,7 +107,7 @@ const sidebar = () => {
                 href: "#",
                 icon: (
                   <Image
-                    src={user.photoURL}
+                    src={`${user.photoURL}`}
                     className="h-7 w-7 flex-shrink-0 rounded-full"
                     width={50}
                     height={50}
@@ -131,70 +126,6 @@ const sidebar = () => {
 }
 
 
-// Dummy dashboard component with content
-const Dashboard = () => {
 
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  if (loading) return <p>Loading...</p>;
-  if (!user) {
-    router.push("/auth/login");
-    return null;
-  }
-
-  const { data: tasks = [], isLoading, refetch } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: async () => {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`)
-      return data
-    }
-  })
-
-  console.log(tasks)
-
-  return (
-    <div className="grid flex-1 pt-5 grid-cols-12 justify-evenly items-center overflow-y-auto pl-6">
-      {/* todo list box */}
-      <div className="col-span-4 border h-screen p-6">
-        <h1 className="text-xl flex items-center justify-center">Todo list</h1>
-        <div className="space-y-4 transition-all duration-300 ease-in-out">
-          {tasks.map((task) =>
-            <Card key={task._id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle>{task.title}</CardTitle>
-                    <CardDescription>
-                      {task.description}
-                    </CardDescription>
-                  </div>
-                  <div className="flex items-center justify-end gap-2">
-                    <Button size={"icon"}><FileX2 /></Button>
-                    <Button size={"icon"}><Pencil /></Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {task.timestamp ? <p>{moment(task.timestamp).format('LLLL')}</p> : null}
-
-                {task.category === "to-do" ? <Badge>{task.category}</Badge> : ""}
-                {task.category === "in-progress" ? <Badge>{task.category}</Badge> : ""}
-                {task.category === "done" ? <Badge>{task.category}</Badge> : ""}
-              </CardContent>
-            </Card>)}
-        </div>
-      </div>
-      {/* In Progress box */}
-      <div className="col-span-4 border h-screen p-6">
-        <h1 className="text-xl flex items-center justify-center">In Progress list</h1>
-      </div>
-      {/* Done box */}
-      <div className="col-span-4 border h-screen p-6">
-        <h1 className="text-xl flex items-center justify-center">Done list</h1>
-      </div>
-    </div>
-  );
-};
 
 export default sidebar

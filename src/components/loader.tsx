@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Loader = () => {
   return (
     <StyledWrapper>
-      <div className='flex justify-center items-center h-screen'>
+      <div className='flex justify-center items-center h-screen w-screen'>
         <div className="loader">
           <svg viewBox="0 0 80 80">
             <circle r={32} cy={40} cx={40} id="test" />

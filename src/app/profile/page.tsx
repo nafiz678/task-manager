@@ -12,6 +12,7 @@ import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
 import AddTask from "@/components/Add-task";
+import { ModeToggle } from "@/components/ui/ThemeToggle";
 
 const sidebar = () => {
  
@@ -48,7 +49,7 @@ const sidebar = () => {
   return (
     <div
       className={cn(
-        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
+        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-950 w-full flex-1  mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden",
         "h-screen"
       )}
     >
@@ -56,7 +57,7 @@ const sidebar = () => {
         <SidebarBody className="justify-between gap-10 border">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <div className="rounded-md transition-all duration-300 ease-in-out flex items-end justify-end w-full">
-              <span className="hover:bg-gray-200 p-[3px] rounded-md">
+              <span className="hover:bg-gray-200 dark:hover:bg-gray-800 p-[3px] rounded-md">
                 <PanelLeft className="cursor-pointer " onClick={() => setOpen((prev) => !prev)} />
               </span>
             </div>
@@ -98,7 +99,7 @@ const sidebar = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="flex items-center justify-between">
             <SidebarLink
               link={{
                 label: user.displayName,
@@ -114,6 +115,7 @@ const sidebar = () => {
                 ),
               }}
             />
+            {open ? <ModeToggle /> : null}
           </div>
         </SidebarBody>
       </Sidebar>
