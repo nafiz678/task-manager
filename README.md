@@ -1,9 +1,19 @@
 # Task Manager
 
+## 🚀 Live Demo
+[Live Site](#)((https://task-manager-zeta-flame.vercel.app/))
+
+
 A simple and efficient task management application that allows users to organize tasks into categories, update task statuses using drag-and-drop, and manage their workflow effectively.
 
-## 🚀 Live Demo
-[Live Site](#) (Add your deployed link here)
+
+## ✨ Features
+- User authentication with Firebase
+- Drag and drop task management
+- Task categories: To-Do, In Progress, Done
+- Database integration inside the project for faster performance
+- Real-time updates with React Query
+
 
 ## 📦 Dependencies
 - Next.js
@@ -21,6 +31,7 @@ A simple and efficient task management application that allows users to organize
 - **State Management:** React Query
 - **Drag & Drop:** DnD Kit
 
+
 ## 📥 Installation
 Follow these steps to set up the project locally:
 
@@ -28,3 +39,17 @@ Follow these steps to set up the project locally:
 ```bash
 git clone https://github.com/yourusername/task-manager.git
 cd task-manager
+
+```
+
+### 2️⃣ Install Dependencies
+```bash
+pnpm install
+
+```
+
+### 3️⃣ Run Locally
+```bash
+pnpm dev
+
+```
