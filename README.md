@@ -1,7 +1,8 @@
 # Task Manager
 
 ## 🚀 Live Demo
-[Live Site](#)((https://task-manager-zeta-flame.vercel.app/))
+[Live Site](https://task-manager-zeta-flame.vercel.app/)
+
 
 
 A simple and efficient task management application that allows users to organize tasks into categories, update task statuses using drag-and-drop, and manage their workflow effectively.
