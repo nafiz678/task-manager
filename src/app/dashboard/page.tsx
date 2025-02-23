@@ -17,6 +17,8 @@ import Dashboard from "@/components/Dashboard";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import MobileMenu from "@/components/MobileMenu";
+import Link from "next/link";
+import logo from "../../../public/logo.png"
 
 export interface TaskProps {
   _id: string;
@@ -84,7 +86,24 @@ const sidebar = () => {
       <Sidebar open={open}>
         <SidebarBody className="justify-between gap-10 border">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <div className="rounded-md transition-all duration-300 ease-in-out flex items-end justify-end w-full">
+            <div className="rounded-md transition-all duration-300 ease-in-out flex items-end justify-between w-full">
+              {open ? <Link
+                href="/dashboard"
+                className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+              >
+                <Image src={logo} alt="" height={28} width={28} className="transition-all duration-300 ease-in-out" />
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}
+                  className="font-medium text-black dark:text-white whitespace-pre"
+                >
+                  Task manager
+                </motion.span>
+              </Link> :
+                null
+              }
+
               <span className="hover:bg-gray-200 dark:hover:bg-gray-800 p-[3px] rounded-md">
                 <PanelLeft className="cursor-pointer " onClick={() => setOpen((prev) => !prev)} />
               </span>
@@ -148,7 +167,39 @@ const sidebar = () => {
         </SidebarBody>
 
         {/* mobile menu */}
-        <MobileMenu />
+        <div className="flex items-center md:hidden justify-between px-4">
+          <Link
+            href="/dashboard"
+            className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+          >
+            <Image src={logo} alt="" height={28} width={28} className="transition-all duration-300 ease-in-out" />
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+              className="font-medium text-black dark:text-white whitespace-pre"
+            >
+              Task manager
+            </motion.span>
+          </Link>
+          <div className="flex items-end justify-end">
+            <div className="md:hidden ">
+              <Button className="p-0 m-0" variant={"ghost"} onClick={() => setDialogOpen(true)}>
+                <CalendarPlus className="text-neutral-700 !size-5 dark:text-neutral-200 " />
+                <motion.span
+                  animate={{
+                    display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                    opacity: animate ? (open ? 1 : 0) : 1,
+                  }}
+                  className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover:translate-x-[5px]"
+                >
+                  Add task
+                </motion.span>
+              </Button>
+            </div>
+            <MobileMenu />
+          </div>
+        </div>
       </Sidebar>
       <Dashboard refetch={refetch} tasks={tasks} isLoading={isLoading} />
     </div>

@@ -108,7 +108,7 @@ const Dashboard = ({tasks, isLoading, refetch}: Props) => {
 
   return (
     <DndContext collisionDetection={closestCorners} onDragEnd={onDragEnd}>
-      <div className="grid flex-1 pt-5 md:grid-cols-12 overflow-y-auto pl-6 gap-4 ">
+      <div className="grid flex-1 pt-5 md:grid-cols-4 lg:grid-cols-12 overflow-y-auto pl-6 gap-4 ">
         <DroppableContainer refetch={refetch} title="To-Do" category="to-do" tasks={taskState["to-do"]} />
         <DroppableContainer refetch={refetch} title="In Progress" category="in-progress" tasks={taskState["in-progress"]} />
         <DroppableContainer refetch={refetch} title="Done" category="done" tasks={taskState["done"]} />
