@@ -29,7 +29,7 @@ const DraggableTask = ({ task, refetch }: Props) => {
 
     const handleDelete = async (id: string) => {
         try {
-            const { data } = await axios.delete(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${id}`)
+            const { data } = await axios.delete(`/api/tasks/${id}`)
             console.log(data)
             if (data.message) {
                 toast.success(data.message)

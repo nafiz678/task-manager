@@ -54,7 +54,7 @@ const UpdateDialog = ({ open, setOpen, task, refetch }: Props) => {
         try {
             // Sending the updated title and description in the PUT request
             const { title, description } = values;
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${task._id}`, {
+            const response = await axios.put(`/api/tasks/${task._id}`, {
                 title,
                 description
             });

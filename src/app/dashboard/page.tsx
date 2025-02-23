@@ -38,7 +38,7 @@ const sidebar = () => {
     queryKey: ["tasks", user?.email],
     queryFn: async () => {
       if (!user?.email) return [];
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${user.email}`);
+      const { data } = await axios.get(`/api/tasks/${user.email}`);
       return data;
     },
     enabled: !!user?.email,

@@ -53,7 +53,7 @@ const AddTask = ({ open, setOpen, refetch }:
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const data = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks`,{
+            const data = await axios.post(`/api/tasks`,{
                 title: values.title,
                 description: values.description,
                 timestamp: Date.now(),

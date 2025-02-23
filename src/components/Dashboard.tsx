@@ -64,7 +64,7 @@ const Dashboard = ({tasks, isLoading, refetch}: Props) => {
   // Mutation to update task category in the backend
   const updateTaskCategory = useMutation({
     mutationFn: async ({ taskId, newCategory }: { taskId: string; newCategory: string }) => {
-      await axios.patch(`${process.env.NEXT_PUBLIC_SERVER_URL}/tasks/${taskId}`, {
+      await axios.patch(`/api/tasks/${taskId}`, {
         category: newCategory,
       });
     },
